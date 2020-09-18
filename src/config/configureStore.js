@@ -2,10 +2,12 @@
  
 import { combineReducers, createStore } from 'redux'
 import { persistStore, persistReducer } from 'redux-persist'
-import homeReducer from '../screens/home/ducks/homeReducer'
+import homeReducer from 'ContactsHub/src/screens/home/ducks/homeReducer'
+import loginReducer from 'ContactsHub/src/screens/login/ducks/LoginScreen.reducer'
 import AsyncStorage from '@react-native-community/async-storage';
 const rootReducer = combineReducers({
-  homeReducer: homeReducer
+  homeReducer: homeReducer,
+  loginReducer: loginReducer 
 });
 
 const persistConfig = {

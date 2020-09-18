@@ -4,22 +4,33 @@ import { connect } from 'react-redux';
 
 import home from '../../screens/home/home'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import login from 'ContactsHub/src/screens/login/login';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
-function MainStack() {
+function MainStack(props) {
+  const {isLoggedin} = props;
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={home} />
-      </Tab.Navigator>
+      {
+        !isLoggedin ?
+        <Tab.Navigator>
+          <Tab.Screen name="Login" component={login} />
+        </Tab.Navigator>
+        : 
+        <Stack.Navigator>
+          <Stack.Screen name="home" component={home} />
+        </Stack.Navigator>
+      }
     </NavigationContainer>
   );
 }
 
 function mapStateToProps(state) {
   return {
-    register: state.register,
+    isLoggedin: state.LoginReducer.isLoggedin,
   };
 }
 
