@@ -5,9 +5,9 @@ import AsyncStorage from "@react-native-community/async-storage";
   * @param value value of key
   * async function to store data into async Storage 
   */
- _storeData = async (key, value) => {
+_storeData = async (key, value) => {
     try {
-        await AsyncStorage.setItem(key, value);
+        await AsyncStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
         alert(JSON.stringify(error))
     }
@@ -16,9 +16,14 @@ import AsyncStorage from "@react-native-community/async-storage";
 /**
 * async function to get all users from async Storage 
 */
-export const _getUsers = () => {
+export const _getUsers = async () => {
     try {
-        return AsyncStorage.getItem('allUsers');
+        let data = await AsyncStorage.getItem('allUsers')
+        if (data) {
+            return JSON.parse(data);
+        }
+        else
+            return null;
     } catch (error) {
         alert(JSON.stringify(error))
     }
@@ -26,11 +31,16 @@ export const _getUsers = () => {
 
 export const signupUser = async (userData) => {
     let allUsers = await _getUsers();
-    allUsers.push(userData)
+    if (allUsers){
+        allUsers.push(userData)
+    }
+    else{
+        allUsers = [userData]
+    }
     _storeData('allUsers', allUsers);
 };
 
 export const authorizeUser = async (user) => {
     let allUsers = await _getUsers() || [];
-    return allUsers.some(aUser => (iaUser.username === user.username && aUser.password === user.password))
+    return allUsers.some(aUser => (aUser.username === user.username && aUser.password === user.password))
 }

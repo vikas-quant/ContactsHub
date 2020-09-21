@@ -1,0 +1,3 @@
+
+
+export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
