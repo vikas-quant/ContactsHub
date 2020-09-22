@@ -1,5 +1,6 @@
 export default {
     APPNAME: 'Contacts Hub',
-    USERNAME: 'User Name',
-    INVALIDUSER: 'Invalid Username or password'
+    USERNAME: 'Email',
+    INVALIDUSER: 'Invalid Username or password',
+    MOBILE: 'Mobile No.'
 }
