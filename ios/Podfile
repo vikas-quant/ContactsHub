@@ -10,6 +10,8 @@ target 'ContactsHub' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'ContactsHubTests' do
     inherit! :complete
     # Pods for testing

@@ -5,9 +5,22 @@ import AsyncStorage from "@react-native-community/async-storage";
   * @param value value of key
   * async function to store data into async Storage 
   */
-_storeData = async (key, value) => {
+export const _storeData = async (key, value) => {
     try {
         await AsyncStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+        alert(JSON.stringify(error))
+    }
+};
+
+export const _getUser = async () => {
+    try {
+        let data = await AsyncStorage.getItem('loginUser')
+        if (data) {
+            return JSON.parse(data);
+        }
+        else
+            return null;
     } catch (error) {
         alert(JSON.stringify(error))
     }

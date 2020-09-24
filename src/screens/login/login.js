@@ -19,6 +19,7 @@ import { Spinner } from 'ContactsHub/src/widgets/Spinner';
 import AppConstants from 'ContactsHub/src/constants/appConstants';
 import { authorizeUser } from 'ContactsHub/src/utils/asyncUtil';
 import { loginSuccess } from './ducks/LoginScreen.actions';
+import { _storeData } from '../../utils/asyncUtil';
 
 const { normalize, heightScale, widthScale } = scaling;
 class LoginScreen extends Component {
@@ -40,16 +41,16 @@ class LoginScreen extends Component {
             .min(8, 'Password must be 8 chars.')
     });
 
-    handleSubmit = async (formData) => {
+    handleSubmit = async (formData = {}) => {
         const { navigation, login } = this.props;
-        let user = await authorizeUser(formData);
+        let user = await authorizeUser(formData);
         if (user) {
+            _storeData('loginUser', formData.username)
             login(true)
-            navigation.navigate('home');
         }
         else {
             this.setState({ error: AppConstants.INVALIDUSER })
-        }
+        } 
     }
 
     render() {
