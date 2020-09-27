@@ -5,9 +5,11 @@ import { persistStore, persistReducer } from 'redux-persist'
 import homeReducer from 'ContactsHub/src/screens/home/ducks/homeReducer'
 import loginReducer from 'ContactsHub/src/screens/login/ducks/LoginScreen.reducer'
 import AsyncStorage from '@react-native-community/async-storage';
+import ProfileReducer from 'ContactsHub/src/screens/profile/ducks/ProfileScreen.reducer';
 const rootReducer = combineReducers({
   homeReducer: homeReducer,
-  loginReducer: loginReducer 
+  loginReducer: loginReducer,
+  profileReducer: ProfileReducer
 });
 
 const persistConfig = {

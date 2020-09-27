@@ -1,0 +1,1 @@
+export const profile = require('ContactsHub/assets/images/profile.png')
