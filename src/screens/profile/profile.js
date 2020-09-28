@@ -19,10 +19,11 @@ import { Formik } from 'formik';
 import ImagePicker from 'react-native-image-picker';
 import { profile } from '../../../assets/images';
 import { ScrollView } from 'react-native-gesture-handler';
-import { _getUser } from '../../utils/asyncUtil';
+import { _getUser, _storeData } from '../../utils/asyncUtil';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { registerUserProfile } from './ducks/ProfileScreen.actions';
+import { loginSuccess } from '../login/ducks/LoginScreen.actions';
 
 const { normalize, heightScale, widthScale } = scaling;
 
@@ -39,11 +40,10 @@ class ProfileScreen extends React.Component {
     }
 
     async componentDidMount() {
-        const { usersProfile } = this.props;
+        const { usersProfile = {} } = this.props;
         let user = await _getUser();
-        let userData = usersProfile[user];
-        console.log(usersProfile, user)
-        this.setState({ userData, avatar: userData.avatar });
+        let userData = usersProfile[user] || {};
+        this.setState({ userData, avatar: userData.avatar || profile });
     }
 
     onChange = (event, selectedDate) => {
@@ -88,7 +88,7 @@ class ProfileScreen extends React.Component {
         const { registerUserProfile } = this.props;
         this.setState({ isEdit: false })
         let user = await _getUser();
-        registerUserProfile(user, {...formData, avatar: this.state.avatar});
+        registerUserProfile(user, { ...formData, avatar: this.state.avatar });
 
     }
 
@@ -288,6 +288,18 @@ class ProfileScreen extends React.Component {
                                         }}
                                         title={isEdit ? "Save" : 'Edit'}
                                     />
+                                    <Button
+                                        raised
+                                        buttonStyle={styles.button}
+                                        containerStyle={{ width: widthScale(100) }}
+                                        onPress={
+                                            () => {
+                                                _storeData('loginUser', '')
+                                                this.props.login(false)
+                                            }
+                                        }
+                                        title={'Log Out'}
+                                    />
                                 </View>
 
                             </ScrollView>
@@ -305,7 +317,8 @@ const mapStateToProps = ({ profileReducer: usersProfile }) => (
 );
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    registerUserProfile: (user, data) => dispatch(registerUserProfile(user, data))
+    registerUserProfile: (user, data) => dispatch(registerUserProfile(user, data)),
+    login: (data) => dispatch(loginSuccess(data))
 }, dispatch);
 
 export default connect(

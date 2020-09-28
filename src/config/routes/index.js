@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import login from 'ContactsHub/src/screens/login/login';
 import signup from 'ContactsHub/src/screens/signup/signup';
 import profile from 'ContactsHub/src/screens/profile/profile';
+import contacts from 'ContactsHub/src/screens/contacts/contacts';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -32,6 +33,7 @@ class MainStack extends React.Component {
             <Tab.Navigator>
             <Tab.Screen name="home" component={home} />
               <Tab.Screen name="profile" component={profile} />
+              <Tab.Screen name="contacts" component={contacts} />
             </Tab.Navigator>
         }
       </NavigationContainer>
