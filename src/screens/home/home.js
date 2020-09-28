@@ -95,13 +95,21 @@ class HomeScreen extends React.Component {
         location: Yup.string(),
     });
 
+    compareInterests = (userinterest = [], interest = []) => {
+        return userinterest.some((uLoc) => {
+            return interest.some((loc) => {
+                return uLoc == loc;
+            })
+        })
+    }
+
     handleSubmit = (searchData) => {
         const { listUsers } = this.state;
         const {
             name = '*',
             age = 0,
-            gender = '*',
-            interest = '*',
+            gender = [],
+            interest = [],
             location = '*',
         } = searchData
         let searchedUser = [];
@@ -110,7 +118,7 @@ class HomeScreen extends React.Component {
             const {
                 name: username = '',
                 dob = '',
-                gender: usergender = '',
+                gender: usergender = [],
                 interest: userinterest = '',
                 location: userlocation = '',
             } = user
@@ -121,9 +129,9 @@ class HomeScreen extends React.Component {
             if (
                 username.includes(name) ||
                 age == userage ||
-                usergender.includes(gender) ||
-                userinterest.includes(interest) ||
-                userlocation.includes(location)
+                (usergender && usergender[0].includes((gender && gender[0]))) ||
+                userlocation.includes(location) ||
+                this.compareInterests(userinterest, interest)
             ) {
                 searchedUser.push(user)
             }

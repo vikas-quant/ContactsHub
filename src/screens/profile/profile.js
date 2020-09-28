@@ -41,8 +41,8 @@ class ProfileScreen extends React.Component {
 
     async componentDidMount() {
         const { usersProfile = {} } = this.props;
-        let user = await _getUser();
-        let userData = usersProfile[user] || {};
+        const user = await _getUser();
+        const userData = usersProfile[user] || {};
         this.setState({ userData, avatar: userData.avatar || profile });
     }
 
@@ -52,22 +52,10 @@ class ProfileScreen extends React.Component {
         this.setState({ date: currentDate });
     };
 
-
     handlePicker = () => {
         // console.log('edit');
         ImagePicker.showImagePicker({}, (response) => {
-            console.log('Response = ', response);
-
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            } else {
-                this.setState({ avatar: response });
-                // here we can call a API to upload image on server
-            }
+            this.setState({ avatar: response });
         });
     };
 
@@ -94,20 +82,13 @@ class ProfileScreen extends React.Component {
 
     getInitialValues = () => {
         const { userData = {} } = this.state;
-        const {
-            name = '',
-            dob = '',
-            gender = '',
-            interest = '',
-            location = '',
-        } = userData;
         return {
-            name,
-            dob,
-            gender,
-            interest,
-            location,
-        };
+            name ='',
+            dob ='',
+            gender ='',
+            interest ='',
+            location ='',
+        } = userData;
     }
 
     render() {
@@ -144,13 +125,11 @@ class ProfileScreen extends React.Component {
                                             inputContainerStyle={isEdit ? {} : { borderBottomWidth: 0 }}
                                             placeholder={isEdit ? AppConstants.NAME : ''}
                                             value={values.name}
-                                            onChangeText={handleChange('name')}
+                                            onChangeText={(value) => { handleChange('name')(value) }}
                                             errorMessage={errors.name}
                                             editable={isEdit}
                                         />
                                     </View>
-
-
                                     <View style={styles.picker}>
                                         {isEdit ?
                                             <View>
@@ -185,7 +164,6 @@ class ProfileScreen extends React.Component {
                                                 <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#86939e', marginBottom: 10 }}>Genders</Text>
                                                 {values.gender ?
                                                     <View>
-
                                                         {
                                                             AppConstants.GENDER.map((item) => {
                                                                 let element = values.gender.indexOf(item.id)
@@ -212,7 +190,6 @@ class ProfileScreen extends React.Component {
                                         />
                                     </View>
                                     <View style={styles.picker}>
-
                                         {isEdit ?
                                             <View>
                                                 <MultiSelect
@@ -272,7 +249,6 @@ class ProfileScreen extends React.Component {
                                         />
                                     </View>
                                 </View>
-
                                 <View style={styles.buttonContainer}>
                                     <Button
                                         raised
@@ -310,7 +286,6 @@ class ProfileScreen extends React.Component {
         )
     }
 }
-
 
 const mapStateToProps = ({ profileReducer: usersProfile }) => (
     usersProfile
