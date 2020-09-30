@@ -19,10 +19,11 @@ import { Formik } from 'formik';
 import ImagePicker from 'react-native-image-picker';
 import { profile } from '../../../assets/images';
 import { ScrollView } from 'react-native-gesture-handler';
-import { _getUser } from '../../utils/asyncUtil';
+import { _getUser, _storeData } from '../../utils/asyncUtil';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { registerUserProfile } from './ducks/ProfileScreen.actions';
+import { loginSuccess } from '../login/ducks/LoginScreen.actions';
 
 const { normalize, heightScale, widthScale } = scaling;
 
@@ -39,11 +40,10 @@ class ProfileScreen extends React.Component {
     }
 
     async componentDidMount() {
-        const { usersProfile } = this.props;
-        let user = await _getUser();
-        let userData = usersProfile[user];
-        console.log(usersProfile, user)
-        this.setState({ userData, avatar: userData.avatar });
+        const { usersProfile = {} } = this.props;
+        const user = await _getUser();
+        const userData = usersProfile[user] || {};
+        this.setState({ userData, avatar: userData.avatar || profile });
     }
 
     onChange = (event, selectedDate) => {
@@ -52,22 +52,10 @@ class ProfileScreen extends React.Component {
         this.setState({ date: currentDate });
     };
 
-
     handlePicker = () => {
         // console.log('edit');
         ImagePicker.showImagePicker({}, (response) => {
-            console.log('Response = ', response);
-
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            } else {
-                this.setState({ avatar: response });
-                // here we can call a API to upload image on server
-            }
+            this.setState({ avatar: response });
         });
     };
 
@@ -88,26 +76,19 @@ class ProfileScreen extends React.Component {
         const { registerUserProfile } = this.props;
         this.setState({ isEdit: false })
         let user = await _getUser();
-        registerUserProfile(user, {...formData, avatar: this.state.avatar});
+        registerUserProfile(user, { ...formData, avatar: this.state.avatar });
 
     }
 
     getInitialValues = () => {
         const { userData = {} } = this.state;
-        const {
-            name = '',
-            dob = '',
-            gender = '',
-            interest = '',
-            location = '',
-        } = userData;
         return {
-            name,
-            dob,
-            gender,
-            interest,
-            location,
-        };
+            name ='',
+            dob ='',
+            gender ='',
+            interest ='',
+            location ='',
+        } = userData;
     }
 
     render() {
@@ -144,13 +125,11 @@ class ProfileScreen extends React.Component {
                                             inputContainerStyle={isEdit ? {} : { borderBottomWidth: 0 }}
                                             placeholder={isEdit ? AppConstants.NAME : ''}
                                             value={values.name}
-                                            onChangeText={handleChange('name')}
+                                            onChangeText={(value) => { handleChange('name')(value) }}
                                             errorMessage={errors.name}
                                             editable={isEdit}
                                         />
                                     </View>
-
-
                                     <View style={styles.picker}>
                                         {isEdit ?
                                             <View>
@@ -185,7 +164,6 @@ class ProfileScreen extends React.Component {
                                                 <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#86939e', marginBottom: 10 }}>Genders</Text>
                                                 {values.gender ?
                                                     <View>
-
                                                         {
                                                             AppConstants.GENDER.map((item) => {
                                                                 let element = values.gender.indexOf(item.id)
@@ -212,7 +190,6 @@ class ProfileScreen extends React.Component {
                                         />
                                     </View>
                                     <View style={styles.picker}>
-
                                         {isEdit ?
                                             <View>
                                                 <MultiSelect
@@ -272,7 +249,6 @@ class ProfileScreen extends React.Component {
                                         />
                                     </View>
                                 </View>
-
                                 <View style={styles.buttonContainer}>
                                     <Button
                                         raised
@@ -288,6 +264,18 @@ class ProfileScreen extends React.Component {
                                         }}
                                         title={isEdit ? "Save" : 'Edit'}
                                     />
+                                    <Button
+                                        raised
+                                        buttonStyle={styles.button}
+                                        containerStyle={{ width: widthScale(100) }}
+                                        onPress={
+                                            () => {
+                                                _storeData('loginUser', '')
+                                                this.props.login(false)
+                                            }
+                                        }
+                                        title={'Log Out'}
+                                    />
                                 </View>
 
                             </ScrollView>
@@ -299,13 +287,13 @@ class ProfileScreen extends React.Component {
     }
 }
 
-
 const mapStateToProps = ({ profileReducer: usersProfile }) => (
     usersProfile
 );
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    registerUserProfile: (user, data) => dispatch(registerUserProfile(user, data))
+    registerUserProfile: (user, data) => dispatch(registerUserProfile(user, data)),
+    login: (data) => dispatch(loginSuccess(data))
 }, dispatch);
 
 export default connect(

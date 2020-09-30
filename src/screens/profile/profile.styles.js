@@ -21,7 +21,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: normalize(20)
     },buttonContainer: {
-        marginTop: 50
+        flexDirection: 'row',
+        marginTop: 50,
+        justifyContent: "space-between"
     },
     picker: {
         marginBottom: 10

@@ -48,13 +48,8 @@ class LoginScreen extends Component {
     handleSubmit = async (formData) => {
         const { navigation, login } = this.props;
         console.log(formData)
-        let user = signupUser({...formData});
-        if (user) {
-            // login(true)
-        }
-        else {
-            this.setState({ error: AppConstants.INVALIDUSER })
-        }
+        signupUser({...formData});
+       this.props.navigation.navigate('Login')
     }
 
     render() {
